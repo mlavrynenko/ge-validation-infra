@@ -12,7 +12,7 @@ resource "aws_cloudwatch_event_rule" "this" {
   name = "ge-dataquality-validation-${var.env}-s3-trigger"
 
   event_pattern = jsonencode({
-    source = ["aws.s3"]
+    source      = ["aws.s3"]
     detail-type = ["Object Created"]
     detail = {
       bucket = {
@@ -50,13 +50,13 @@ resource "aws_iam_policy" "eventbridge_ecs_run" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["ecs:RunTask"]
+        Effect   = "Allow"
+        Action   = ["ecs:RunTask"]
         Resource = var.task_definition_arn
       },
       {
-        Effect = "Allow"
-        Action = ["iam:PassRole"]
+        Effect   = "Allow"
+        Action   = ["iam:PassRole"]
         Resource = var.task_role_arn
       }
     ]

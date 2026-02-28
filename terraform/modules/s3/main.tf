@@ -6,10 +6,10 @@ resource "aws_s3_bucket" "input" {
 
   tags = merge(
     {
-    System = var.system_name
-    Env    = var.env
-  },
-  var.tags
+      System = var.system_name
+      Env    = var.env
+    },
+    var.tags
   )
 }
 
@@ -21,9 +21,9 @@ resource "aws_s3_bucket" "results" {
 
   tags = merge(
     {
-    System = var.system_name
-    Env    = var.env
-  },
-  var.tags
+      System = var.system_name
+      Env    = var.env
+    },
+    var.tags
   )
 }

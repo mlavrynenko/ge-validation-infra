@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "ecs_task_assume" {
       type        = "Service"
     }
 
-    actions       = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRole"]
   }
 }
 
@@ -39,22 +39,22 @@ resource "aws_iam_role" "execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "execution_role_policy" {
-  role        = aws_iam_role.execution_role.name
-  policy_arn  = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 # --------------------
 # Secrets Manager read
 # --------------------
 resource "aws_iam_policy" "secrets_read" {
-  name          = "ge-dataquality-validation-${var.env}-secrets-read"
+  name = "ge-dataquality-validation-${var.env}-secrets-read"
 
-  policy        = jsonencode({
-      Version   = "2012-10-17"
-      Statement = [{
-      Effect    = "Allow"
-      Action    = ["secretsmanager:GetSecretValue"]
-      Resource  = var.db_secret_arn
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["secretsmanager:GetSecretValue"]
+      Resource = var.db_secret_arn
     }]
   })
 }
@@ -70,20 +70,20 @@ resource "aws_iam_role_policy_attachment" "task_secrets" {
 resource "aws_iam_policy" "s3_access" {
   name = "ge-dataquality-validation-${var.env}-s3-access"
 
-  policy        = jsonencode({
-    Version     = "2012-10-17"
-    Statement   = [{
-      Sid       = "ReadInputData"
-      Effect    = "Allow"
-      Action    = ["s3:GetObject"]
-      Resource  = "${var.input_bucket_arn}/*"
-    },
-    {
-      Sid       = "WriteResults"
-      Effect    = "Allow"
-      Action    = ["s3:PutObject"]
-      Resource  = "${var.results_bucket_arn}/*"
-    }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid      = "ReadInputData"
+      Effect   = "Allow"
+      Action   = ["s3:GetObject"]
+      Resource = "${var.input_bucket_arn}/*"
+      },
+      {
+        Sid      = "WriteResults"
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${var.results_bucket_arn}/*"
+      }
     ]
   })
 }
