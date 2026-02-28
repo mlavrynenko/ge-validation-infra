@@ -1,10 +1,9 @@
 # --------------------
 # Secrets manager
 # --------------------
-resource "aws_secretsmanager_secret" "db" {
-  name = "dq/db/${var.env}"
-
-  description = "Data Quality Engine PostgreSQL credentials (${var.env})"
+module "secrets" {
+  source = "../../modules/secrets"
+  env    = var.env
 }
 
 # --------------------
