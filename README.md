@@ -123,3 +123,66 @@ terraform apply
 ```
 Each environment manages its own infrastructure and state independently, while
 sharing the same backend locking mechanism.
+
+--- 
+## Event-Driven Execution (S3 → ECS)
+
+The Data Quality Validation Framework supports **event-driven execution** using **Amazon EventBridge**.
+
+When enabled, the system can automatically start a validation task in response to new data arriving in S3.
+
+### How it works
+
+1. A new object is uploaded to the input S3 bucket
+2. Amazon EventBridge receives an `Object Created` event
+3. EventBridge triggers an ECS Fargate task
+4. The task receives runtime context via environment variables:
+   - source S3 bucket
+   - object key
+5. The validation container processes the file and writes results to the results bucket
+
+This mechanism allows the platform to operate in a **fully asynchronous, serverless, event-driven mode**.
+
+---
+
+### Supported file types
+
+The S3 trigger can be configured to react only to specific file types using suffix filters.
+
+By default, the following formats are supported:
+
+- `.xlsx`
+- `.csv`
+- `.parquet`
+
+Filtering is enforced at the EventBridge rule level to prevent unnecessary task executions.
+
+---
+
+### Scope and guarantees
+
+- EventBridge rules are **explicitly defined and version-controlled**
+- Only object creation events are handled
+- Execution permissions are restricted to:
+  - `ecs:RunTask`
+  - `iam:PassRole` (scoped to the task role)
+- No S3 polling or long-running listeners are used
+
+This design ensures:
+- predictable cost model
+- clear audit trail
+- strong separation of concerns
+
+---
+
+## Execution Models
+
+The platform supports **event-driven execution** and is designed to support additional execution models as the system evolves.
+
+### Implemented
+
+| Mode | Description |
+|-----|-------------|
+| Event-driven | ECS task triggered automatically by S3 object creation events |
+
+Event-driven execution is implemented using **Amazon EventBridge** and **ECS Fargate**.
