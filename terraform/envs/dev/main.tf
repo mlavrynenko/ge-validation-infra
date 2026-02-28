@@ -26,7 +26,7 @@ module "ecs" {
 
   aws_region = var.aws_region
   env        = var.env
-  image_uri  = var.image_uri
+  image_uri  = "${module.ecr.repository_url}:${var.image_tag}"
 
   task_role_arn      = module.iam.task_role_arn
   execution_role_arn = module.iam.execution_role_arn
@@ -50,4 +50,10 @@ module "s3_event_trigger" {
 
   subnet_ids          = data.aws_subnets.this.ids
   security_group_ids  = [data.aws_security_group.default.id]
+}
+
+module "ecr" {
+  source      = "../../modules/ecr"
+  env         = var.env
+  system_name = var.system_name
 }

@@ -1,6 +1,6 @@
 variable "env" {
-  description = "Deployment environment"
   type        = string
+  description = "Deployment environment"
 }
 
 variable "system_name" {
