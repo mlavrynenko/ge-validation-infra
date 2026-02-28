@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "ecs_task_assume" {
 # Task role (runtime)
 # --------------------
 resource "aws_iam_role" "task_role" {
-  name               = "ge-dataquality-${var.env}-task-role"
+  name               = "ge-dataquality-validation-${var.env}-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
@@ -34,7 +34,7 @@ resource "aws_iam_role" "task_role" {
 # Execution role
 # --------------------
 resource "aws_iam_role" "execution_role" {
-  name               = "ge-dataquality-${var.env}-execution-role"
+  name               = "ge-dataquality-validation-${var.env}-execution-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
@@ -47,11 +47,11 @@ resource "aws_iam_role_policy_attachment" "execution_role_policy" {
 # Secrets Manager read
 # --------------------
 resource "aws_iam_policy" "secrets_read" {
-  name               = "ge-dataquality-${var.env}-secrets-read"
+  name          = "ge-dataquality-validation-${var.env}-secrets-read"
 
-  policy             = jsonencode({
-    Version     = "2012-10-17"
-    Statement   = [{
+  policy        = jsonencode({
+      Version   = "2012-10-17"
+      Statement = [{
       Effect    = "Allow"
       Action    = ["secretsmanager:GetSecretValue"]
       Resource  = var.db_secret_arn
@@ -68,14 +68,14 @@ resource "aws_iam_role_policy_attachment" "task_secrets" {
 # S3 access
 # --------------------
 resource "aws_iam_policy" "s3_access" {
-  name = "ge-dataquality-${var.env}-s3-access"
+  name = "ge-dataquality-validation-${var.env}-s3-access"
 
   policy        = jsonencode({
     Version     = "2012-10-17"
     Statement   = [{
       Sid       = "ReadInputData"
       Effect    = "Allow"
-      Action    = ["s3:getObject"]
+      Action    = ["s3:GetObject"]
       Resource  = "${var.input_bucket_arn}/*"
     },
     {

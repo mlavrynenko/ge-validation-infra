@@ -3,18 +3,26 @@ module "secrets" {
   env                = var.env
 }
 
+module "s3" {
+  source            = "../../modules/s3"
+  env               = var.env
+  system_name       = var.system_name
+  tags              = {
+  Owner = "data-platform"
+  }
+}
+
 module "iam" {
   source             = "../../modules/iam"
 
   env                = var.env
-  input_bucket_arn   = aws_s3_bucket.input.arn
-  results_bucket_arn = aws_s3_bucket.results.arn
+  input_bucket_arn   = module.s3.input_bucket_arn
+  results_bucket_arn = module.s3.results_bucket_arn
   db_secret_arn      = module.secrets.db_secret_arn
 }
 
 module "ecs" {
   source             = "../../modules/ecs-service"
-
 
   aws_region         = var.aws_region
   env                = var.env
@@ -25,13 +33,4 @@ module "ecs" {
 
   results_bucket     = module.s3.results_bucket_name
   db_secret_id       = module.secrets.db_secret_name
-}
-
-module "s3" {
-  source            = "../../modules/s3"
-  env               = var.env
-  system_name       = var.system_name
-  tags              = {
-  Owner = "data-platform"
-  }
 }

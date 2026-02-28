@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "ge-dataquality-terraform-state"
+    bucket         = "ge-dataquality-validation-terraform-state"
     key            = "prod/terraform.tfstate"
     region         = "eu-central-1"
-    dynamodb_table = "ge-dataquality-terraform-locks"
+    dynamodb_table = "ge-dataquality-validation-terraform-locks"
     encrypt        = true
   }
   required_providers {
