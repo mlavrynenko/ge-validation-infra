@@ -186,3 +186,33 @@ The platform supports **event-driven execution** and is designed to support addi
 | Event-driven | ECS task triggered automatically by S3 object creation events |
 
 Event-driven execution is implemented using **Amazon EventBridge** and **ECS Fargate**.
+
+--- 
+## Container Image Management (ECR)
+
+This project includes an **Amazon ECR (Elastic Container Registry)** module used to manage container images for the Data Quality Validation service.
+
+### Purpose
+
+The ECR module provides:
+- a dedicated container registry per environment
+- consistent naming and tagging of images
+- clear separation between infrastructure and application delivery
+
+Terraform **does not build Docker images**.  
+It defines where images are stored and how they are referenced by ECS tasks.
+
+### Image lifecycle
+
+1. The ECR repository is created and managed by Terraform
+2. Application images are built externally (e.g. CI pipeline)
+3. Images are pushed to ECR using environment-specific tags (e.g. `dev`, `prod`)
+4. Terraform references the image via: <repository_url>:<image_tag>
+
+5. This allows infrastructure changes and application releases to evolve independently.
+
+### Example
+
+Terraform configuration:
+```hcl
+image_uri = "${module.ecr.repository_url}:${var.image_tag}"

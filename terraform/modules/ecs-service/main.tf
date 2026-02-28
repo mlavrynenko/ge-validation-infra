@@ -23,8 +23,8 @@ resource "aws_ecs_task_definition" "this" {
   cpu                      = var.cpu
   memory                   = var.memory
 
-  task_role_arn            = var.task_role_arn
-  execution_role_arn       = var.execution_role_arn
+  task_role_arn      = var.task_role_arn
+  execution_role_arn = var.execution_role_arn
 
   depends_on = [
     aws_cloudwatch_log_group.ecs
@@ -37,10 +37,10 @@ resource "aws_ecs_task_definition" "this" {
       essential = true
 
       environment = [
-        { name = "APP_ENV",         value = var.env },
-        { name = "DB_SECRET_ID",    value = var.db_secret_id },
-        { name = "AWS_REGION",      value = var.aws_region },
-        { name = "RESULTS_BUCKET",  value = var.results_bucket }
+        { name = "APP_ENV", value = var.env },
+        { name = "DB_SECRET_ID", value = var.db_secret_id },
+        { name = "AWS_REGION", value = var.aws_region },
+        { name = "RESULTS_BUCKET", value = var.results_bucket }
       ]
 
       logConfiguration = {
